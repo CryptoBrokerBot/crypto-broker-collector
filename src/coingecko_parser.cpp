@@ -15,6 +15,7 @@ using namespace std::string_literals;
 namespace {
   CryptoCurrency deserialize_entry(Object::Ptr entry) {
     using std::string;
+    string id = entry->getValue<string>("id"s);
     string symbol = entry->getValue<string>("symbol"s);
     string name = entry->getValue<string>("name"s);
     string image_url = entry->getValue<string>("image");
@@ -23,6 +24,7 @@ namespace {
     double volume = entry->getValue<double>("total_volume");
     string coingecko_last_upd = entry->getValue<string>("last_updated");
     return {
+      id,
       symbol,
       name,
       image_url,

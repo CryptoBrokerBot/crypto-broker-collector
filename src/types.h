@@ -6,6 +6,7 @@
 #define types_h
 
 struct CryptoCurrency {
+  std::string id;
   std::string symbol;
   std::string name;
   std::string image_url;
