@@ -1,2 +1,4 @@
 build/
 setenv.bash
+.vscode/
+.vscode/settings.json
