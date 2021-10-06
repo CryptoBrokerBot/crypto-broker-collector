@@ -7,12 +7,14 @@
 #include "http.h"
 
 namespace {
+  //Get the stringified json array from coingecko
   std::string call_coingecko(int page) {
     const std::string coingecko_uri = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=" + std::to_string(page);
     return http_request("GET", coingecko_uri);
   }
 }
 
+// Pagination basically
 std::vector<CryptoCurrency> coingecko::current_prices(int page) {
   if (page <= 0) {
     throw std::runtime_error("Invalid page number for coingecko price API");

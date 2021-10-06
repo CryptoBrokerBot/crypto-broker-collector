@@ -11,9 +11,22 @@ find_library(POCO_FOUNDATION PocoFoundation)
 find_library(POCO_NET PocoNet)
 find_library(PQXX NAMES pqxx pq)
 
-add_executable(CryptoBrokerCollector src/main.cpp src/coingecko_comm.cpp src/coingecko_parser.cpp src/dao.cpp)
+add_executable(
+  CryptoBrokerCollector 
+  src/main.cpp 
+  src/coingecko_comm.cpp 
+  src/coingecko_parser.cpp 
+  src/dao.cpp
+)
 
 # target_include_directories(CryptoBrokerCollector PUBLIC /usr/include/)
+
+# https://stackoverflow.com/a/57685932
+# To resolve "undefined reference to `pthread_create'"
+find_package (Threads REQUIRED)
+target_link_libraries(CryptoBrokerCollector
+    
+)
 
 target_link_libraries(CryptoBrokerCollector 
   PUBLIC ${POCO_FOUNDATION}
@@ -23,4 +36,7 @@ target_link_libraries(CryptoBrokerCollector
   PUBLIC ${POCO_UTIL}
   PUBLIC ${POCO_CRYPTO}
   PUBLIC ${POCO_NET_SSL}
-  PUBLIC ${PQXX})
+  PUBLIC ${PQXX}
+  PUBLIC ${CMAKE_THREAD_LIBS_INIT}
+)
+

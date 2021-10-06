@@ -2,9 +2,7 @@
 
 #include <string>
 
-#ifndef types_h
-#define types_h
-
+// This represents each coin
 struct CryptoCurrency {
   std::string id;
   std::string symbol;
@@ -14,6 +12,5 @@ struct CryptoCurrency {
   double market_cap;
   double volume;
   std::string coingecko_last_updated;
+  int market_cap_rank;
 };
-
-#endif

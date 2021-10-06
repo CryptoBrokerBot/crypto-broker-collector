@@ -12,6 +12,7 @@
 using namespace Poco::JSON;
 using namespace std::string_literals;
 
+// From the json object, return our struct from types.h
 namespace {
   CryptoCurrency deserialize_entry(Object::Ptr entry) {
     using std::string;
@@ -23,6 +24,7 @@ namespace {
     double market_cap = entry->getValue<double>("market_cap");
     double volume = entry->getValue<double>("total_volume");
     string coingecko_last_upd = entry->getValue<string>("last_updated");
+    int market_cap_rank = entry->getValue<int>("market_cap_rank");
     return {
       id,
       symbol,
@@ -31,11 +33,13 @@ namespace {
       current_price,
       market_cap,
       volume,
-      coingecko_last_upd
+      coingecko_last_upd,
+      market_cap_rank
     };
   }
 }
 
+//Essentially takes an stringifyied json array and convers to vector of crypto currency
 std::vector<CryptoCurrency> coingecko::parser::parse(std::string input) {
   Parser parser;
   Poco::Dynamic::Var var = parser.parse(input);
