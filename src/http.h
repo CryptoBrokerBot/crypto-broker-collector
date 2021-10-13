@@ -52,13 +52,18 @@ public:
   std::unique_ptr<Poco::Net::HTMLForm> form;
 };
 
+//Creates, sends, receives the http request and returns the response string
 template <class T>
 inline std::string http_request_impl(T &session, Poco::Net::HTTPRequest &request, Poco::Net::HTTPResponse &response, HttpBody &&body, bool ignore_err) {
+  
+  //Add the payload depending on what type it is
   if (body.body_type == HttpBodyType::FORM) {
     body.form->prepareSubmit(request);
   } else if (body.body_type == HttpBodyType::STRING) {
     request.setContentLength(body.payload_str.size());
   }
+
+  //Now send the request
   std::ostream &rq = session.sendRequest(request);
   if (body.body_type == HttpBodyType::FORM) {
     body.form->write(rq);
@@ -66,6 +71,8 @@ inline std::string http_request_impl(T &session, Poco::Net::HTTPRequest &request
     rq << body.payload_str;
     rq.flush();
   }
+
+  //Receive response and return response string
   std::istream &rs = session.receiveResponse(response);
   
   int status = response.getStatus();
@@ -90,16 +97,20 @@ inline std::string http_method_to_poco_method(std::string method) {
   throw std::runtime_error("Unknown HTTP method");
 }
 
+//Makes the http/s request
 inline std::string http_request(std::string method, std::string uri_str, HttpBody &&body = HttpBody(), bool ignore_err = false)
 {
+  // Get the method
   std::string poco_method = http_method_to_poco_method(method);
-  Poco::URI uri { uri_str };
+  Poco::URI uri { uri_str }; // List initalization
   std::string path(uri.getPathAndQuery());
   if (path.empty()) path = "/";
 
+  //Create res and req objeects
   Poco::Net::HTTPResponse response;
   Poco::Net::HTTPRequest request(poco_method, path, Poco::Net::HTTPMessage::HTTP_1_1);
 
+  //Send
   if (uri.getScheme() == "http") {
     Poco::Net::HTTPClientSession session(uri.getHost(), uri.getPort());
     return http_request_impl(session, request, response, std::move(body), ignore_err);
